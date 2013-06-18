@@ -1,0 +1,19 @@
+{
+    "icon": {
+        "type": "iconfilechooser",
+        "description": "Icon",
+        "default": "go-next"
+    },
+    
+    "description": {
+        "type": "entry",
+        "description": "Description",
+        "default": ""
+    },
+    
+    "command": {
+        "type": "entry",
+        "description": "Command",
+        "default": ""
+    }
+}
