@@ -32,9 +32,6 @@ MyApplet.prototype =  {
             this._set_icon();
             this._set_tooltip();
             
-            let settingsMenuItem = new Applet.MenuItem(_("Settings"), Gtk.STOCK_EDIT, Lang.bind(this, this._open_settings));
-            this._applet_context_menu.addMenuItem(settingsMenuItem);
-            
         } catch(e) {
             global.logError(e);
         }
@@ -58,10 +55,6 @@ MyApplet.prototype =  {
         this.settings.bindProperty(Settings.BindingDirection.IN, "icon", "icon", this._set_icon);
         this.settings.bindProperty(Settings.BindingDirection.IN, "command", "command", function(){});
         this.settings.bindProperty(Settings.BindingDirection.IN, "description", "description", this._set_tooltip);
-    },
-    
-    _open_settings: function() {
-        Util.spawnCommandLine("cinnamon-settings applets " + UUID);
     },
     
     _set_icon: function() {
