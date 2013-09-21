@@ -71,12 +71,6 @@ MyApplet.prototype =  {
         this.set_applet_tooltip(this.description);
     },
     
-    locate: function() {
-        let box = this.actor;
-        box.add_style_pseudo_class("highlight");
-        Mainloop.timeout_add(3000, function() { box.remove_style_pseudo_class("highlight"); });
-    },
-    
     _animate:function(count) {
         if ( count < 1 ) return;
         Tweener.addTween(this._applet_icon, {

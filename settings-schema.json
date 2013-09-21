@@ -15,11 +15,5 @@
         "type": "entry",
         "description": "Command",
         "default": ""
-    },
-    
-    "locate": {
-        "type": "button",
-        "description": "Show on Panel",
-        "callback": "locate"
     }
 }
