@@ -1,4 +1,5 @@
 const Applet = imports.ui.applet;
+const Main = imports.ui.main;
 const Settings = imports.ui.settings;
 const Tweener = imports.ui.tweener;
 const Gio = imports.gi.Gio;
@@ -13,24 +14,24 @@ const UUID = "commandLauncher@scollins";
 const ICON_HEIGHT = 22;
 
 
-function MyApplet(orientation, panel_height, instanceId) {
-    this._init(orientation, panel_height, instanceId);
+function MyApplet(metadata, orientation, panel_height, instanceId) {
+    this._init(metadata, orientation, panel_height, instanceId);
 }
 
 MyApplet.prototype =  {
     __proto__: Applet.IconApplet.prototype,
     
-    _init: function(orientation, panel_height, instanceId) {
+    _init: function(metadata, orientation, panel_height, instanceId) {
         try {
-            this.orientation = orientation;
-            this.panel_height = panel_height;
+            
+            this.metadata = metadata;
             this.instanceId = instanceId;
             Applet.IconApplet.prototype._init.call(this, this.orientation, panel_height);
             
-            this._bind_settings();
+            this._bindSettings();
             
-            this._set_icon();
-            this._set_tooltip();
+            this._setIcon();
+            this._setTooltip();
             
         } catch(e) {
             global.logError(e);
@@ -38,26 +39,43 @@ MyApplet.prototype =  {
     },
     
     on_applet_clicked: function(event) {
+        this.launch();
+    },
+    
+    openSettings: function() {
+        Util.spawnCommandLine("cinnamon-settings applets " + this.metadata["uuid"] + " " + this.instanceId);
+    },
+    
+    launch: function() {
         try {
             let allocation = this._applet_icon_box.get_allocation_box();
             this._applet_icon_box.width = allocation.x2 - allocation.x1;
             this._applet_icon_box.height = allocation.y2 - allocation.y1;
             this._animate(3);
-            if ( this.command == "" ) this._open_settings();
+            if ( this.command == "" ) this.openSettings();
             else Util.spawnCommandLine(this.command);
         } catch(e) {
             global.logError(e);
         }
     },
     
-    _bind_settings: function () {
-        this.settings = new Settings.AppletSettings(this, UUID, this.instanceId);
-        this.settings.bindProperty(Settings.BindingDirection.IN, "icon", "icon", this._set_icon);
+    _bindSettings: function () {
+        this.settings = new Settings.AppletSettings(this, this.metadata["uuid"], this.instanceId);
+        this.settings.bindProperty(Settings.BindingDirection.IN, "icon", "icon", this._setIcon);
         this.settings.bindProperty(Settings.BindingDirection.IN, "command", "command", function(){});
-        this.settings.bindProperty(Settings.BindingDirection.IN, "description", "description", this._set_tooltip);
+        this.settings.bindProperty(Settings.BindingDirection.IN, "description", "description", this._setTooltip);
+        this.settings.bindProperty(Settings.BindingDirection.IN, "keyLaunch", "keyLaunch", this._setKeybinding);
+        this._setKeybinding();
     },
     
-    _set_icon: function() {
+    _setKeybinding: function() {
+        if ( this.keyId ) Main.keybindingManager.removeHotKey(this.keyId);
+        if ( this.keyLaunch == "" ) return;
+        this.keyId = "placesCenter-open";
+        Main.keybindingManager.addHotKey(this.keyId, this.keyLaunch, Lang.bind(this, this.launch));
+    },
+    
+    _setIcon: function() {
         if ( this.icon.split("/").length > 1 ) this.set_applet_icon_path(this.icon);
         else {
             this._applet_icon = St.TextureCache.get_default().load_gicon(null, new Gio.ThemedIcon({ name: this.icon }), ICON_HEIGHT);
@@ -67,7 +85,7 @@ MyApplet.prototype =  {
         }
     },
     
-    _set_tooltip: function() {
+    _setTooltip: function() {
         this.set_applet_tooltip(this.description);
     },
     
@@ -97,6 +115,6 @@ MyApplet.prototype =  {
 
 
 function main(metadata, orientation, panel_height, instanceId) {
-    let myApplet = new MyApplet(orientation, panel_height, instanceId);
+    let myApplet = new MyApplet(metadata, orientation, panel_height, instanceId);
     return myApplet;
 }

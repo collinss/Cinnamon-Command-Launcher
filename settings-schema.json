@@ -15,5 +15,11 @@
         "type": "entry",
         "description": "Command",
         "default": ""
+    },
+    
+    "keyLaunch": {
+        "type": "keybinding",
+        "description": "Keyboard shortcut",
+        "default": ""
     }
 }

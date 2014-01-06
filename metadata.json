@@ -2,6 +2,5 @@
     "uuid": "commandLauncher@scollins",
     "name": "Command Launcher",
     "description": "Gives the ability to create multiple custom launchers",
-    "icon": "go-next",
     "max-instances": 20
 }
