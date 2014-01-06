@@ -1,19 +1,40 @@
 {
-    "icon": {
+    "panelIcon": {
         "type": "iconfilechooser",
-        "description": "Icon",
+        "description": "Panel Icon",
         "default": "go-next"
     },
     
-    "description": {
-        "type": "entry",
-        "description": "Description",
-        "default": ""
+    "symbolicPanelIcon": {
+        "type": "checkbox",
+        "description": "Symbolic",
+        "default": false
+    },
+    
+    "useAltEnv": {
+        "type": "checkbox",
+        "description": "Run in alternate directory",
+        "default": false
+    },
+    
+    "altEnv": {
+        "type": "filechooser",
+        "description": "Environment path",
+        "default": "/",
+        "select-dir": true,
+        "indent": true,
+        "dependency": "useAltEnv"
     },
     
     "command": {
         "type": "entry",
         "description": "Command",
+        "default": ""
+    },
+    
+    "description": {
+        "type": "entry",
+        "description": "Description",
         "default": ""
     },
     
