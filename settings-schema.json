@@ -1,4 +1,9 @@
 {
+    "apearance": {
+        "type": "header",
+        "description": "Appearance and behavior"
+    },
+    
     "panelIcon": {
         "type": "iconfilechooser",
         "description": "Panel Icon",
@@ -8,6 +13,39 @@
     "symbolicPanelIcon": {
         "type": "checkbox",
         "description": "Symbolic",
+        "default": false
+    },
+    
+    "description": {
+        "type": "entry",
+        "description": "Description",
+        "default": ""
+    },
+    
+    "keyLaunch": {
+        "type": "keybinding",
+        "description": "Keyboard shortcut",
+        "default": ""
+    },
+    
+    "sep1": {
+        "type": "separator"
+    },
+    
+    "commandTitle": {
+        "type": "header",
+        "description": "Command settings"
+    },
+    
+    "command": {
+        "type": "entry",
+        "description": "Command",
+        "default": ""
+    },
+    
+    "useRoot": {
+        "type": "checkbox",
+        "description": "Run as root",
         "default": false
     },
     
@@ -24,29 +62,5 @@
         "select-dir": true,
         "indent": true,
         "dependency": "useAltEnv"
-    },
-    
-    "command": {
-        "type": "entry",
-        "description": "Command",
-        "default": ""
-    },
-    
-    "useRoot": {
-        "type": "checkbox",
-        "description": "Run as root",
-        "default": false
-    },
-    
-    "description": {
-        "type": "entry",
-        "description": "Description",
-        "default": ""
-    },
-    
-    "keyLaunch": {
-        "type": "keybinding",
-        "description": "Keyboard shortcut",
-        "default": ""
     }
 }
