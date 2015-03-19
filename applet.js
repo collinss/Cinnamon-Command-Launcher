@@ -52,6 +52,7 @@ MyApplet.prototype = {
         this.settings.bindProperty(Settings.BindingDirection.IN, "panelIcon", "panelIcon", this.setPanelIcon);
         this.settings.bindProperty(Settings.BindingDirection.IN, "symbolicPanelIcon", "symbolicPanelIcon", this.setPanelIcon);
         this.settings.bindProperty(Settings.BindingDirection.IN, "command", "command", function(){});
+        this.settings.bindProperty(Settings.BindingDirection.IN, "useRoot", "useRoot");
         this.settings.bindProperty(Settings.BindingDirection.IN, "description", "description", this.setTooltip);
         this.settings.bindProperty(Settings.BindingDirection.IN, "useAltEnv", "useAltEnv");
         this.settings.bindProperty(Settings.BindingDirection.IN, "altEnv", "altEnv");
@@ -75,6 +76,7 @@ MyApplet.prototype = {
             if ( this.useAltEnv && Gio.file_new_for_path(this.altEnv).query_exists(null) ) basePath = this.altEnv;
             
             let input = this.command.replace("~/", GLib.get_home_dir() + "/"); //replace all ~/ with path to home directory
+            if ( this.useRoot ) this.command = "pkexec " + this.command;
             let [success, argv] = GLib.shell_parse_argv(input);
             
             if ( !success ) {

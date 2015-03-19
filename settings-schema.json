@@ -32,6 +32,12 @@
         "default": ""
     },
     
+    "useRoot": {
+        "type": "checkbox",
+        "description": "Run as root",
+        "default": false
+    },
+    
     "description": {
         "type": "entry",
         "description": "Description",
