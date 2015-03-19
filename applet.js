@@ -67,23 +67,29 @@ MyApplet.prototype = {
     },
     
     launch: function() {
-        try {
-            this._applet_icon.scale_gravity = Clutter.Gravity.CENTER;
-            this._animate(NUMBER_OF_BOUNCES);
-            if ( this.command == "" ) Util.spawnCommandLine("cinnamon-settings applets " + this.metadata.uuid + " " + this.instanceId);
-            else {
-                let basePath = null;
-                if ( this.useAltEnv && Gio.file_new_for_path(this.altEnv).query_exists(null) ) basePath = this.altEnv;
-                
-                let input = this.command.replace("~/", GLib.get_home_dir() + "/"); //replace all ~/ with path to home directory
-                let [success, argv] = GLib.shell_parse_argv(input);
-                
-                let flags = GLib.SpawnFlags.SEARCH_PATH;
-                GLib.spawn_async(basePath, argv, null, flags, null);
-                
+        this._applet_icon.scale_gravity = Clutter.Gravity.CENTER;
+        this._animate(NUMBER_OF_BOUNCES);
+        if ( this.command == "" ) Util.spawnCommandLine("cinnamon-settings applets " + this.metadata.uuid + " " + this.instanceId);
+        else {
+            let basePath = null;
+            if ( this.useAltEnv && Gio.file_new_for_path(this.altEnv).query_exists(null) ) basePath = this.altEnv;
+            
+            let input = this.command.replace("~/", GLib.get_home_dir() + "/"); //replace all ~/ with path to home directory
+            let [success, argv] = GLib.shell_parse_argv(input);
+            
+            if ( !success ) {
+                Main.notify("Unable to parse \"" + input + "\"");
+                return;
             }
-        } catch(e) {
-            global.logError(e);
+            
+            try {
+                let flags = GLib.SpawnFlags.SEARCH_PATH | GLib.SpawnFlags.DO_NOT_REAP_CHILD;
+                let [result, pid] = GLib.spawn_async(basePath, argv, null, flags, null);
+                GLib.child_watch_add(GLib.PRIORITY_DEFAULT, pid, Lang.bind(this, this.onClosed), null);
+            } catch(e) {
+                Main.notify("Error while trying to run \"" + input + "\"", e.message);
+                return;
+            }
         }
     },
     
@@ -142,6 +148,10 @@ MyApplet.prototype = {
         }
         this.__icon_type = -1;
         this.__icon_name = icon_path;
+    },
+    
+    onClosed: function(pid) {
+        Main.notify("Command Completed");
     }
 }
 
