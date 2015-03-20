@@ -10,12 +10,6 @@
         "default": "go-next"
     },
     
-    "symbolicPanelIcon": {
-        "type": "checkbox",
-        "description": "Symbolic",
-        "default": false
-    },
-    
     "description": {
         "type": "entry",
         "description": "Description",
