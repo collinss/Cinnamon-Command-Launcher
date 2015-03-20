@@ -51,12 +51,13 @@ MyApplet.prototype = {
         this.settings = new Settings.AppletSettings(this, this.metadata["uuid"], this.instanceId);
         this.settings.bindProperty(Settings.BindingDirection.IN, "panelIcon", "panelIcon", this.setPanelIcon);
         this.settings.bindProperty(Settings.BindingDirection.IN, "symbolicPanelIcon", "symbolicPanelIcon", this.setPanelIcon);
-        this.settings.bindProperty(Settings.BindingDirection.IN, "command", "command", function(){});
-        this.settings.bindProperty(Settings.BindingDirection.IN, "useRoot", "useRoot");
         this.settings.bindProperty(Settings.BindingDirection.IN, "description", "description", this.setTooltip);
+        this.settings.bindProperty(Settings.BindingDirection.IN, "keyLaunch", "keyLaunch", this.setKeybinding);
+        this.settings.bindProperty(Settings.BindingDirection.IN, "showNotifications", "showNotifications");
+        this.settings.bindProperty(Settings.BindingDirection.IN, "command", "command");
+        this.settings.bindProperty(Settings.BindingDirection.IN, "useRoot", "useRoot");
         this.settings.bindProperty(Settings.BindingDirection.IN, "useAltEnv", "useAltEnv");
         this.settings.bindProperty(Settings.BindingDirection.IN, "altEnv", "altEnv");
-        this.settings.bindProperty(Settings.BindingDirection.IN, "keyLaunch", "keyLaunch", this.setKeybinding);
         this.setKeybinding();
     },
     
@@ -153,7 +154,7 @@ MyApplet.prototype = {
     },
     
     onClosed: function(pid, status, time) {
-        Main.notify("Command Completed", "Command: "+this.command+"\nTime: "+time.toLocaleTimeString());
+        if ( this.showNotifications ) Main.notify("Command Completed", "Command: "+this.command+"\nTime: "+time.toLocaleTimeString());
     }
 }
 

@@ -28,6 +28,12 @@
         "default": ""
     },
     
+    "showNotifications": {
+        "type": "checkbox",
+        "description": "Show notifications on completion",
+        "default": true
+    },
+    
     "sep1": {
         "type": "separator"
     },
