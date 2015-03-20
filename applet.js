@@ -76,7 +76,7 @@ MyApplet.prototype = {
             if ( this.useAltEnv && Gio.file_new_for_path(this.altEnv).query_exists(null) ) basePath = this.altEnv;
             
             let input = this.command.replace("~/", GLib.get_home_dir() + "/"); //replace all ~/ with path to home directory
-            if ( this.useRoot ) this.command = "pkexec " + this.command;
+            if ( this.useRoot ) input = "pkexec " + input;
             let [success, argv] = GLib.shell_parse_argv(input);
             
             if ( !success ) {
@@ -87,7 +87,7 @@ MyApplet.prototype = {
             try {
                 let flags = GLib.SpawnFlags.SEARCH_PATH | GLib.SpawnFlags.DO_NOT_REAP_CHILD;
                 let [result, pid] = GLib.spawn_async(basePath, argv, null, flags, null);
-                GLib.child_watch_add(GLib.PRIORITY_DEFAULT, pid, Lang.bind(this, this.onClosed), null);
+                GLib.child_watch_add(GLib.PRIORITY_DEFAULT, pid, Lang.bind(this, this.onClosed, new Date()), null);
             } catch(e) {
                 Main.notify("Error while trying to run \"" + input + "\"", e.message);
                 return;
@@ -152,8 +152,8 @@ MyApplet.prototype = {
         this.__icon_name = icon_path;
     },
     
-    onClosed: function(pid) {
-        Main.notify("Command Completed");
+    onClosed: function(pid, status, time) {
+        Main.notify("Command Completed", "Command: "+this.command+"\nTime: "+time.toLocaleTimeString());
     }
 }
 
