@@ -80,16 +80,17 @@ MyApplet.prototype = {
             let [success, argv] = GLib.shell_parse_argv(input);
             
             if ( !success ) {
-                Main.notify("Unable to parse \"" + input + "\"");
+                Main.notify("Unable to parse \"" + this.command + "\"");
                 return;
             }
             
             try {
                 let flags = GLib.SpawnFlags.SEARCH_PATH | GLib.SpawnFlags.DO_NOT_REAP_CHILD;
                 let [result, pid] = GLib.spawn_async(basePath, argv, null, flags, null);
-                GLib.child_watch_add(GLib.PRIORITY_DEFAULT, pid, Lang.bind(this, this.onClosed, new Date()), null);
+                if ( this.showNotifications ) Main.notify("Process started", "Command: "+this.command+"\nProcess Id: "+pid);
+                GLib.child_watch_add(GLib.PRIORITY_DEFAULT, pid, Lang.bind(this, this.onClosed), null);
             } catch(e) {
-                Main.notify("Error while trying to run \"" + input + "\"", e.message);
+                Main.notify("Error while trying to run \"" + this.command + "\"", e.message);
                 return;
             }
         }
@@ -136,8 +137,8 @@ MyApplet.prototype = {
         this.set_applet_tooltip(this.description);
     },
     
-    onClosed: function(pid, status, time) {
-        if ( this.showNotifications ) Main.notify("Command Completed", "Command: "+this.command+"\nTime: "+time.toLocaleTimeString());
+    onClosed: function(pid, status) {
+        if ( this.showNotifications ) Main.notify("Process ended", "Command: "+this.command+"\nProcess Id: "+pid);
     }
 }
 
